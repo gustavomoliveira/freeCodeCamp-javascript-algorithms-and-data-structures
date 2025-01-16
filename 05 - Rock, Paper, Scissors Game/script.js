@@ -1,13 +1,11 @@
+let playerScore = 0;
+let computerScore = 0;
+
 function getRandomComputerResult() {
     const options = ['Rock', 'Paper', 'Scissors'];
     let random = Math.floor(Math.random() * options.length);
     return options[random];
 }
-
-console.log(getRandomComputerResult());
-
-let playerScore = 0;
-let computerScore = 0;
 
 function hasPlayerWonTheRound(player, computer) {
     if(player === 'Rock' && computer === 'Scissors') {
@@ -48,28 +46,32 @@ function showResults(userOption) {
     computerScoreSpanElement.innerText = computerScore;
     playerScoreSpanElement.innerText = playerScore;
 
-    if(playerScore === 3) {
-        winnerMsgElement.innerText = 'Player has won the game!';
-        optionsContainer.style.display = "none";
-        resetGameBtn.style.display = "block";
-    } else if(computerScore === 3) {
-        winnerMsgElement.innerText = 'Computer has won the game!';
+    if(playerScore === 3 || computerScore === 3) {
+        winnerMsgElement.innerText = `${playerScore === 3 ? 'Player' : 'Computer'} has won the game!`;
         optionsContainer.style.display = "none";
         resetGameBtn.style.display = "block";
     }
 
 }
 
-//TODO --> resetGame();
 function resetGame() {
-
+    playerScore = 0;
+    computerScore = 0;
+    computerScoreSpanElement.innerText = computerScore;
+    playerScoreSpanElement.innerText = playerScore;
+    optionsContainer.style.display = "block";
+    resetGameBtn.style.display = "none";
+    winnerMsgElement.innerText = '';
+    roundResultsMsg.innerHTML = '';
 }
 
-//TODO --> testar seleção de botões;
-/* const playerChoice = Array.from(document.querySelectorAll('.btn')).slice(0, 3);
+resetGameBtn.addEventListener("click", resetGame);
+
+const playerChoice = Array.from(document.querySelectorAll('.btn')).slice(0, 3);
 
 playerChoice.forEach(e => {
     e.addEventListener('click', () => {
-         e.textContent;
+        const choice = e.innerText.trim();
+        showResults(choice);
     })
-}); */
+});
