@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-color: rgb(21, 2, 54);
+    color: white;
+}
+
+.input-container {
+    width: 100%;
+    min-height: 70vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.title {
+    margin: 50px 0;
+    text-align: center;
+    padding: 10px, 0;
+    font-size: 3.5rem;
+}
+
+.input {
+    width: min(100vw, 500px);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border: 5px solid white;
+    background-color: rgb(84, 77, 95);
+}
+
+label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#number {
+    height: 60px;
+    width: 250px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.5rem;
+    border: 3px solid white;
+    background-color: rgb(21, 2, 54);
+    color: white;
+}
+
+#convert-btn {
+    height: 60px;
+    width: 250px;
+    background-color: orange;
+    border: 2px solid rgb(255, 132, 0);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.output-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.output {
+    width: min(100vw, 500px);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border: 5px solid white;
+    background-color: rgb(84, 77, 95);
+}
