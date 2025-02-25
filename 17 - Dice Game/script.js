@@ -27,7 +27,124 @@ const rollDice = () => {
     listOfAllDice.forEach((dice, index) => {
       dice.textContent = diceValuesArr[index];
     });
-  };
+};
+
+const updateStats = () => {
+    rollsElement.textContent = rolls;
+    roundElement.textContent = round;
+};
+
+const updateRadioOption = (index, score) => {
+    scoreInputs[index].disabled = false;
+    scoreInputs[index].value = score;
+    scoreSpans[index].innerText = `, score = ${score}`; 
+};
+
+const updateScore = (selectedValue, achieved) => {
+  score += parseInt(selectedValue);
+  totalScoreElement.textContent = score;
+  scoreHistory.innerHTML += `<li>${achieved} : ${selectedValue}</li>`;
+};
+
+const getHighestDuplicates = (arrNum) => {
+  let count = {};
+  let highestCount = 0;
+
+  const score = arrNum.reduce((a, b) => a + b, 0);
+
+  for (let item of arrNum) {
+    count[item] = (count[item] || 0) + 1;
+    highestCount = Math.max(highestCount, count[item]);
+  }
+
+  if (highestCount >= 4) {
+    updateRadioOption(1, score);
+  }
+
+  if (highestCount >= 3) {
+    updateRadioOption(0, score);
+  }
+
+  updateRadioOption(5, 0);
+};
+
+console.log(scoreInputs[3]);
+
+const detectFullHouse = (diceValuesArr) => {
+  let count = {};
+  let threeOfKind = null;
+  let pair = null;
+
+  for(let item of diceValuesArr) {
+    count[item] = (count[item] || 0) + 1;
+  }
+
+  for(let num in count) {
+    if(count[num] === 3) {
+      threeOfKind = parseInt(num);
+    } else if(count[num] === 2) {
+      pair = parseInt(num);
+    }
+  }
+
+  if(threeOfKind && pair) {
+    updateRadioOption(2, 25);
+  } else {
+    updateRadioOption(5, 0);
+  }
+};
+
+const checkForStraights = (diceValuesArr) => {
+  let sorted = diceValuesArr.sort((a, b) => a - b);
+
+  if(sorted[1] === sorted[0] + 1 && sorted[2] === sorted[1] + 1 && sorted[3] === sorted[2] + 1) {
+    updateRadioOption(3, 30);
+  }
+  
+  if(sorted[1] === sorted[0] + 1 && sorted[2] === sorted[1] + 1 && sorted[3] === sorted[2] + 1 && sorted[4] === sorted[3] + 1 ) {
+    updateRadioOption(4, 40);
+  } 
+  
+  updateRadioOption(5, 0);
+};
+
+const resetRadioOptions = () => {
+  scoreInputs.forEach((input) => {
+    input.disabled = true;
+    input.checked = false;
+  });
+  scoreSpans.forEach((span) => {
+    span.textContent = '';
+  });
+};
+
+const resetGame = () => {
+  listOfAllDice.forEach((dice) => {
+    dice.textContent = 0;
+  });
+  score = 0;
+  rolls = 0;
+  round = 1;
+  totalScoreElement.textContent = score;
+  scoreHistory.innerHTML = '';
+  rollsElement.textContent = rolls;
+  roundElement.textContent = round;
+  resetRadioOptions();
+};
+
+rollDiceBtn.addEventListener('click', () => {
+  if(rolls === 3) {
+    alert('You have made three rolls this round. Please select a score.');
+    return
+  }
+  rolls++;
+  resetRadioOptions()
+  rollDice();
+  getHighestDuplicates(diceValuesArr);
+  updateStats();
+  detectFullHouse(diceValuesArr);
+  checkForStraights(diceValuesArr);
+});
 
 rulesBtn.addEventListener("click", () => {
   isModalShowing = !isModalShowing;
@@ -42,68 +159,28 @@ rulesBtn.addEventListener("click", () => {
 });
 
 keepScoreBtn.addEventListener('click', () => {
-  
-});
+  let selectedValue;
+  let idInput;
 
-const updateStats = () => {
-    if(rolls > 3) {
-        round++
-        roundElement.textContent = round;
-        rolls = 0;
-    } else {
-        rolls++;
-        rollsElement.textContent = rolls;
-    }
-};
-
-const updateRadioOption = (index, score) => {
-  scoreInputs[index].disabled = false;
-  scoreInputs[index].value = score;
-  scoreSpans[index].innerText = `, score = ${score}`; 
-};
-
-const updateScore = (selectedValue, achieved) => {
-  score += Number(selectedValue);
-  totalScoreElement.textContent = score;
-  scoreHistory.innerHTML += `<li>${achieved} : ${selectedValue}</li>`;
-};
-
-const getHighestDuplicates = (arrNum) => {
-    let count = {};
-
-    score = arrNum.reduce((a, b) => a + b, 0);
-
-    for(let item of arrNum) {
-      count[item] = (count[item] || 0) + 1;
-      if(count[item] === 3) {
-        updateRadioOption(0, score);
-      } else if(count[item] >= 4) {
-        updateRadioOption(1, score);
-      } else {
-        updateRadioOption(5, 0);
-      }  
-    }
-};
-
-const resetRadioOptions = () => {
   scoreInputs.forEach((input) => {
-    input.disabled = true;
-    input.checked = false;
-  });
-  console.log(scoreInputs);
-  scoreSpans.forEach((span) => {
-    span.textContent = '';
-  });
-};
-
-rollDiceBtn.addEventListener('click', () => {
-    if(rolls === 3) {
-      alert('You have made three rolls this round. Please select a score.');
-      return
+    if(input.checked) {
+      selectedValue = input.value;
+      idInput = input.id;
+      rolls = 0;
+      round++;
+      resetRadioOptions();
+      updateStats();
+      updateScore(selectedValue, idInput);
+      if(round > 6) {
+        setTimeout(() => (alert(`Game Over! Your total score is ${score}.`), resetGame()), 500);
+      }
     }
-    resetRadioOptions()
-    rollDice();
-    getHighestDuplicates(diceValuesArr);
-    updateStats();
+  });
+
+  if(!selectedValue) {
+    alert('Select an option to continue.');
+  }
 });
+
+
 
